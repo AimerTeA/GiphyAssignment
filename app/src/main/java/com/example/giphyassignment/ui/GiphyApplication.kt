@@ -2,11 +2,22 @@ package com.example.giphyassignment.ui
 
 import android.app.Application
 import com.example.giphyassignment.ui.injection.DaggerApplicationComponent
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
+import javax.inject.Inject
 
-class GiphyApplication : Application() {
+class GiphyApplication : Application(), HasAndroidInjector {
+    @Inject
+    lateinit var activityInjector: DispatchingAndroidInjector<Any>
+
     override fun onCreate() {
         super.onCreate()
 
-        DaggerApplicationComponent.create().inject(this)
+        DaggerApplicationComponent.builder().application(this).build().inject(this)
+    }
+
+    override fun androidInjector(): AndroidInjector<Any> {
+        return activityInjector
     }
 }

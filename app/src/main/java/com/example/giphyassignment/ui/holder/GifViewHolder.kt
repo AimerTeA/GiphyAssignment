@@ -10,12 +10,15 @@ import com.example.giphyassignment.ui.fragment.OnItemClickHandler
 import com.example.giphyassignment.ui.viewModel.GiphyGifViewModel
 
 class GifViewHolder(
-    val view: View,
-    val onItemClickHandler: OnItemClickHandler
+    val view: View
 ) : BaseHolder<GiphyGifViewModel>(view) {
     override fun bind(item: GiphyGifViewModel) {
         DataBindingUtil.bind<ItemGifBinding>(view)?.run {
             data = item
+            ivFavorite.setOnClickListener {
+                item.onItemClick()
+                notifyChange()
+            }
         }
     }
 }

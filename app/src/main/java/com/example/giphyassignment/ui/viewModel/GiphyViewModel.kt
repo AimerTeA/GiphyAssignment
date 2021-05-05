@@ -3,6 +3,7 @@ package com.example.giphyassignment.ui.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.chasecenter.ui.state.Resource
 import com.example.giphyassignment.data.model.GiphyGif
+import com.example.giphyassignment.data.model.GiphyGifObject
 import com.example.giphyassignment.data.repository.GiphyRepository
 import com.example.giphyassignment.ui.viewModel.base.BaseViewModel
 import io.reactivex.observers.DisposableSingleObserver
@@ -32,9 +33,13 @@ class GiphyViewModel @Inject constructor(
         )
     }
 
-    inner class GetTrendingGifsSubscriber : DisposableSingleObserver<List<GiphyGif>>() {
-        override fun onSuccess(t: List<GiphyGif>) {
-            gifs.postValue(Resource.success(t.map { GiphyGifViewModel(it) }))
+    fun saveItemLocally(gif: GiphyGifObject) {
+        
+    }
+
+    inner class GetTrendingGifsSubscriber : DisposableSingleObserver<List<GiphyGifObject>>() {
+        override fun onSuccess(t: List<GiphyGifObject>) {
+            gifs.postValue(Resource.success(t.map { GiphyGifViewModel(it, ::saveItemLocally) }))
         }
 
         override fun onError(e: Throwable) {
@@ -42,8 +47,8 @@ class GiphyViewModel @Inject constructor(
         }
     }
 
-    inner class SearchGifSubscriber : DisposableSingleObserver<List<GiphyGif>>() {
-        override fun onSuccess(value: List<GiphyGif>?) {
+    inner class SearchGifSubscriber : DisposableSingleObserver<List<GiphyGifObject>>() {
+        override fun onSuccess(value: List<GiphyGifObject>?) {
             gifs.postValue(Resource.success(value?.map { GiphyGifViewModel(it) }))
         }
 

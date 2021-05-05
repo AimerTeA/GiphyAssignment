@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@{data.gif.title}"
-            app:gifUrl="@{data.gif.images.previewGif.url}"
+            app:gifUrl="@{data.gif.url}"
             tools:background="@color/design_default_color_secondary"
             tools:layout_height="250dp"/>
 
@@ -37,7 +37,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:alpha=".85"
-            android:onClick="@{() -> data.onItemClick()}"
             android:src="@{data.isSavedLiveData?@drawable/ic_like:@drawable/ic_unlike}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

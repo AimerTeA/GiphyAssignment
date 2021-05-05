@@ -4,15 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.giphyassignment.R
-import com.example.giphyassignment.data.model.GiphyGif
-import com.example.giphyassignment.ui.fragment.OnItemClickHandler
 import com.example.giphyassignment.ui.holder.GifViewHolder
 import com.example.giphyassignment.ui.viewModel.GiphyGifViewModel
 import javax.inject.Inject
 
-class GifAdapter @Inject constructor() : ListAdapter<GiphyGifViewModel, GifViewHolder>(GiphyGifDiffCallback()),
+class GifAdapter @Inject constructor() :
+    ListAdapter<GiphyGifViewModel, GifViewHolder>(GiphyGifDiffCallback()),
     BindableAdapter<List<GiphyGifViewModel>> {
     var gifs = listOf<GiphyGifViewModel>()
 

@@ -1,4 +1,4 @@
-package com.chasecenter.ui.state
+package com.example.giphyassignment.ui.state
 
 data class Resource<out T> constructor(
     val status: ResourceState,

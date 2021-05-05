@@ -1,10 +1,9 @@
 package com.example.giphyassignment.ui.viewModel
 
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.chasecenter.ui.state.Resource
 import com.example.giphyassignment.data.model.GiphyGifObject
 import com.example.giphyassignment.data.repository.GiphyRepository
+import com.example.giphyassignment.ui.state.Resource
 import com.example.giphyassignment.ui.viewModel.base.BaseViewModel
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
@@ -16,39 +15,59 @@ class GiphyViewModel @Inject constructor(
 ) : BaseViewModel() {
     val gifs = MutableLiveData<Resource<List<GiphyGifViewModel>>>()
     val cacheGifs = MutableLiveData<Resource<List<GiphyGifViewModel>>>()
+    var offset = 0
 
-    fun getTrendingGifs() {
-        gifs.postValue(Resource.loading())
+    override fun onCleared() {
+        super.onCleared()
+        disposables.clear()
+    }
+
+    fun getTrendingGifs(isNewSearch: Boolean) {
+        if (isNewSearch)
+            gifs.postValue(Resource.loading())
+        else
+            gifs.postValue(Resource.loading(gifs.value?.data))
+
         disposables.add(
-            giphyRepository.getTrendingGifs()
+            giphyRepository.getTrendingGifs(offset = offset)
                 .subscribeOn(Schedulers.io())
-                .subscribeWith(GetTrendingGifsSubscriber())
+                .subscribeWith(GetTrendingGifsSubscriber(isNewSearch))
         )
     }
 
-    fun searchGifs(query: String) {
-        gifs.postValue(Resource.loading())
+    fun searchGifs(query: String, isNewSearch: Boolean) {
+        if (isNewSearch)
+            gifs.postValue(Resource.loading())
+        else
+            gifs.postValue(Resource.loading(gifs.value?.data))
         disposables.add(
-            giphyRepository.searchGifs(query)
+            giphyRepository.searchGifs(query = query, offset = offset)
                 .subscribeOn(Schedulers.io())
-                .subscribeWith(SearchGifSubscriber())
+                .subscribeWith(SearchGifSubscriber(isNewSearch))
+        )
+    }
+
+    fun deleteGif(gif: GiphyGifObject) {
+        disposables.add(
+            giphyRepository.deleteGif(gif)
+                .subscribeOn(Schedulers.io())
+                .subscribeWith(SaveDeleteGifSubscriber())
+        )
+    }
+
+    fun saveGif(gif: GiphyGifObject) {
+        disposables.add(
+            giphyRepository.saveGif(gif)
+                .subscribeOn(Schedulers.io())
+                .subscribeWith(SaveDeleteGifSubscriber())
         )
     }
 
     fun onGifClicked(gif: GiphyGifObject) {
-        if (gif.isSaved.not()) {
-            disposables.add(
-                giphyRepository.deleteGif(gif)
-                    .subscribeOn(Schedulers.io())
-                    .subscribeWith(SaveDeleteGifSubscriber())
-            )
-        } else {
-            disposables.add(
-                giphyRepository.saveGif(gif)
-                    .subscribeOn(Schedulers.io())
-                    .subscribeWith(SaveDeleteGifSubscriber())
-            )
-        }
+        if (gif.isSaved.not())
+            deleteGif(gif)
+        else
+            saveGif(gif)
     }
 
     fun getSavedGifs() {
@@ -59,9 +78,18 @@ class GiphyViewModel @Inject constructor(
         )
     }
 
-    inner class GetTrendingGifsSubscriber : DisposableSingleObserver<List<GiphyGifObject>>() {
+    inner class GetTrendingGifsSubscriber(
+        val isNewSearch: Boolean
+    ) : DisposableSingleObserver<List<GiphyGifObject>>() {
         override fun onSuccess(t: List<GiphyGifObject>) {
-            gifs.postValue(Resource.success(t.map { GiphyGifViewModel(it, ::onGifClicked) }))
+            if (isNewSearch)
+                gifs.postValue(Resource.success(t.map { GiphyGifViewModel(it, ::onGifClicked) }))
+            else {
+                val resultList = mutableListOf<GiphyGifViewModel>()
+                gifs.value?.data?.let { resultList.addAll(it) }
+                resultList.addAll(t.map { GiphyGifViewModel(it, ::onGifClicked) })
+                gifs.postValue(Resource.success(resultList))
+            }
         }
 
         override fun onError(e: Throwable) {
@@ -69,9 +97,18 @@ class GiphyViewModel @Inject constructor(
         }
     }
 
-    inner class SearchGifSubscriber : DisposableSingleObserver<List<GiphyGifObject>>() {
+    inner class SearchGifSubscriber(
+        val isNewSearch: Boolean
+    ) : DisposableSingleObserver<List<GiphyGifObject>>() {
         override fun onSuccess(t: List<GiphyGifObject>) {
-            gifs.postValue(Resource.success(t.map { GiphyGifViewModel(it, ::onGifClicked) }))
+           if (isNewSearch)
+               gifs.postValue(Resource.success(t.map { GiphyGifViewModel(it, ::onGifClicked) }))
+           else {
+               val resultList = mutableListOf<GiphyGifViewModel>()
+               gifs.value?.data?.let { resultList.addAll(it) }
+               resultList.addAll(t.map { GiphyGifViewModel(it, ::onGifClicked) })
+               gifs.postValue(Resource.success(resultList))
+           }
         }
 
         override fun onError(e: Throwable) {

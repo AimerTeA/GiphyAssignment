@@ -13,10 +13,10 @@ class GiphyRepositoryImp @Inject constructor(
     val remote: GiphyRemote,
     val cache: GiphyCache
 ) : GiphyRepository {
-    override fun getTrendingGifs(limit: Int): Single<List<GiphyGifObject>> {
+    override fun getTrendingGifs(limit: Int, offset: Int): Single<List<GiphyGifObject>> {
         // Determine if the gif is saved, so we can show the right icon in the recyclerview
         return Single.zip(
-            remote.getTrendingGifs(limit),
+            remote.getTrendingGifs(limit, offset),
             cache.getSavedGifs(),
             BiFunction<List<GiphyGifObject>, List<GiphyGifObject>, List<GiphyGifObject>> { remoteGifs, cacheGifs ->
                 if (cacheGifs.isNotEmpty()) {
@@ -32,8 +32,22 @@ class GiphyRepositoryImp @Inject constructor(
         )
     }
 
-    override fun searchGifs(query: String, limit: Int): Single<List<GiphyGifObject>> {
-        return remote.searchGifs(query, limit)
+    override fun searchGifs(query: String, limit: Int, offset: Int): Single<List<GiphyGifObject>> {
+        return Single.zip(
+            remote.searchGifs(query, limit, offset),
+            cache.getSavedGifs(),
+            BiFunction<List<GiphyGifObject>, List<GiphyGifObject>, List<GiphyGifObject>> { remoteGifs, cacheGifs ->
+                if (cacheGifs.isNotEmpty()) {
+                    remoteGifs.forEach { remoteGif ->
+                        val cGif =
+                            cacheGifs.firstOrNull { cacheGif -> cacheGif.gifId == remoteGif.gifId }
+                        if (cGif != null)
+                            remoteGif.isSaved = true
+                    }
+                }
+                remoteGifs
+            }
+        )
     }
 
     override fun saveGif(gif: GiphyGifObject): Completable {

@@ -17,7 +17,7 @@ class GiphyGifViewModel(val gif: GiphyGifObject, val onItemClickCallback:(GiphyG
         onItemClickCallback.invoke(gif)
     }
 
-    private fun updateIsSaved() {
+    fun updateIsSaved() {
         gif.isSaved = gif.isSaved.not()
         isSavedLiveData.set(gif.isSaved)
     }

@@ -1,4 +1,4 @@
-package com.chasecenter.ui.state
+package com.example.giphyassignment.ui.state
 
 enum class ResourceState {
     LOADING, SUCCESS, ERROR, IDLE

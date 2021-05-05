@@ -11,6 +11,7 @@ interface GiphyService {
     @GET("/v1/gifs/trending")
     fun getTrendingGifs(
         @Query("limit") limit: Int,
+        @Query("offset") offset: Int,
         @Query("api_key") apiKey: String = GIPY_API_KEY
     ): Single<BaseResponse<List<GiphyGif>>>
 
@@ -18,6 +19,7 @@ interface GiphyService {
     fun searchGifs(
         @Query("q") q: String,
         @Query("limit") limit: Int,
+        @Query("offset") offset: Int,
         @Query("api_key") apiKey: String = GIPY_API_KEY
     ): Single<BaseResponse<List<GiphyGif>>>
 }

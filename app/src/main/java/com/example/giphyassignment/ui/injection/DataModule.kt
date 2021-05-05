@@ -46,7 +46,4 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindGiphyCache(giphyCache: GiphyCacheImp): GiphyCache
-
-    @Binds
-    abstract fun bindContext(application: Application): Context
 }

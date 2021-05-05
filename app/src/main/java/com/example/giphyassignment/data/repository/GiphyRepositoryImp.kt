@@ -13,4 +13,8 @@ class GiphyRepositoryImp @Inject constructor(
     override fun getTrendingGifs(limit: Int): Single<List<GiphyGif>> {
         return remote.getTrendingGifs(limit)
     }
+
+    override fun searchGifs(query: String, limit: Int): Single<List<GiphyGif>> {
+        return remote.searchGifs(query, limit)
+    }
 }

@@ -13,4 +13,11 @@ interface GiphyService {
         @Query("limit") limit: Int,
         @Query("api_key") apiKey: String = GIPY_API_KEY
     ): Single<BaseResponse<List<GiphyGif>>>
+
+    @GET("/v1/gifs/search")
+    fun searchGifs(
+        @Query("q") q: String,
+        @Query("limit") limit: Int,
+        @Query("api_key") apiKey: String = GIPY_API_KEY
+    ): Single<BaseResponse<List<GiphyGif>>>
 }

@@ -3,6 +3,7 @@ package com.example.giphyassignment.ui.injection
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.giphyassignment.ui.activity.GiphyActivity
+import com.example.giphyassignment.ui.viewModel.GiphyGifViewModel
 import com.example.giphyassignment.ui.viewModel.GiphyViewModel
 import dagger.Binds
 import dagger.MapKey

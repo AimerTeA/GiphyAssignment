@@ -12,7 +12,7 @@ import javax.inject.Inject
 class GiphyViewModel @Inject constructor(
     val giphyRepository: GiphyRepository
 ) : BaseViewModel() {
-    val gifs = MutableLiveData<Resource<List<GiphyGif>>>()
+    val gifs = MutableLiveData<Resource<List<GiphyGifViewModel>>>()
 
     fun getTrendingGifs() {
         gifs.postValue(Resource.loading())
@@ -23,14 +23,32 @@ class GiphyViewModel @Inject constructor(
         )
     }
 
+    fun searchGifs(query: String) {
+        gifs.postValue(Resource.loading())
+        disposables.add(
+            giphyRepository.searchGifs(query)
+                .subscribeOn(Schedulers.io())
+                .subscribeWith(SearchGifSubscriber())
+        )
+    }
+
     inner class GetTrendingGifsSubscriber : DisposableSingleObserver<List<GiphyGif>>() {
         override fun onSuccess(t: List<GiphyGif>) {
-            gifs.postValue(Resource.success(t))
+            gifs.postValue(Resource.success(t.map { GiphyGifViewModel(it) }))
         }
 
         override fun onError(e: Throwable) {
             gifs.postValue(Resource.error(e))
         }
+    }
 
+    inner class SearchGifSubscriber : DisposableSingleObserver<List<GiphyGif>>() {
+        override fun onSuccess(value: List<GiphyGif>?) {
+            gifs.postValue(Resource.success(value?.map { GiphyGifViewModel(it) }))
+        }
+
+        override fun onError(e: Throwable?) {
+            gifs.postValue(Resource.error(e))
+        }
     }
 }

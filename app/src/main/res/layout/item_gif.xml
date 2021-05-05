@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <LinearLayout
+
+    <data>
+
+        <variable
+            name="data"
+            type="com.example.giphyassignment.ui.viewModel.GiphyGifViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <ImageView
             android:id="@+id/ivGif"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            tools:background="@color/design_default_color_secondary"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/separator"
-            android:layout_height="1dp"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@{data.gif.title}"
+            app:gifUrl="@{data.gif.images.previewGif.url}"
+            tools:background="@color/design_default_color_secondary"
+            tools:layout_height="250dp"/>
 
         <ImageView
             android:id="@+id/ivFavorite"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginStart="5dp"
-            tools:src="@drawable/ic_like"/>
-    </LinearLayout>
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:alpha=".85"
+            android:onClick="@{() -> data.onItemClick()}"
+            android:src="@{data.isSavedLiveData?@drawable/ic_like:@drawable/ic_unlike}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

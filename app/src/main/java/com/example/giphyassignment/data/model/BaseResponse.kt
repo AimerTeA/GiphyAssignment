@@ -3,7 +3,7 @@ package com.example.giphyassignment.data.model
 import com.google.gson.annotations.SerializedName
 
 open class BaseResponse<T>(
-    @SerializedName("data") val data: List<GiphyGif>,
+    @SerializedName("data") val data: T,
     @SerializedName("pagination") val pagination: Pagination? = null,
     @SerializedName("meta") val meta: Meta? = null
 ) {

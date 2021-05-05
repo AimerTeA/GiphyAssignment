@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.giphyassignment.R
 import com.example.giphyassignment.databinding.FragmentFavoriteGifBinding
+import com.example.giphyassignment.ui.adapter.GifAdapter
 import com.example.giphyassignment.ui.injection.ViewModelFactory
 import com.example.giphyassignment.ui.viewModel.GiphyViewModel
 import dagger.android.support.AndroidSupportInjection
@@ -23,18 +24,14 @@ class FavoriteGifFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val giphyViewModel: GiphyViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
+        ViewModelProvider(requireActivity(), viewModelFactory)
             .get(GiphyViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         giphyViewModel.run {
-            getTrendingGifs()
-
-            gifs.observe(this@FavoriteGifFragment, Observer {
-                it
-            })
+            getSavedGifs()
         }
     }
 
@@ -54,8 +51,13 @@ class FavoriteGifFragment : Fragment() {
             container,
             false
         )?.run {
+            lifecycleOwner = this@FavoriteGifFragment
+            vm = giphyViewModel
+
             val recyclerAdapter = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
             rvGifs.layoutManager = recyclerAdapter
+            rvGifs.adapter = GifAdapter()
+
             root
         }
     }

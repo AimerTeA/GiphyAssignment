@@ -12,9 +12,7 @@ import com.example.giphyassignment.ui.holder.GifViewHolder
 import com.example.giphyassignment.ui.viewModel.GiphyGifViewModel
 import javax.inject.Inject
 
-class GifAdapter @Inject constructor(
-    val onItemClickHandler: OnItemClickHandler
-) : ListAdapter<GiphyGifViewModel, GifViewHolder>(GiphyGifDiffCallback()),
+class GifAdapter @Inject constructor() : ListAdapter<GiphyGifViewModel, GifViewHolder>(GiphyGifDiffCallback()),
     BindableAdapter<List<GiphyGifViewModel>> {
     var gifs = listOf<GiphyGifViewModel>()
 

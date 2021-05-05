@@ -1,8 +1,11 @@
 package com.example.giphyassignment.ui.injection
 
+import android.app.Application
+import android.content.Context
 import com.example.giphyassignment.BuildConfig
 import com.example.giphyassignment.data.cache.GiphyCache
 import com.example.giphyassignment.data.cache.GiphyCacheImp
+import com.example.giphyassignment.data.cache.database.GiphyDatabase
 import com.example.giphyassignment.data.remote.GiphyRemote
 import com.example.giphyassignment.data.remote.GiphyRemoteImp
 import com.example.giphyassignment.data.remote.GiphyService
@@ -13,6 +16,7 @@ import com.example.giphyassignment.data.repository.GiphyRepositoryImp
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 abstract class DataModule {
@@ -22,6 +26,14 @@ abstract class DataModule {
         @JvmStatic
         fun provideGiphyService(networkConnectionInterceptor: NetworkConnectionInterceptor): GiphyService {
             return GiphyServiceFactory.makeGiphyService(BuildConfig.DEBUG, networkConnectionInterceptor)
+        }
+
+        // Injects the database
+        @Provides
+        @Singleton
+        @JvmStatic
+        fun providesDataBase(application: Application): GiphyDatabase {
+            return GiphyDatabase.getDatabaseInstance(application)
         }
     }
 
@@ -34,4 +46,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindGiphyCache(giphyCache: GiphyCacheImp): GiphyCache
+
+    @Binds
+    abstract fun bindContext(application: Application): Context
 }

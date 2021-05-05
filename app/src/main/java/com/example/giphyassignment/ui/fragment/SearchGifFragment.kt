@@ -28,7 +28,7 @@ class SearchGifFragment : Fragment(), OnItemClickHandler {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val giphyViewModel: GiphyViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
+        ViewModelProvider(requireActivity(), viewModelFactory)
             .get(GiphyViewModel::class.java)
     }
 
@@ -60,7 +60,7 @@ class SearchGifFragment : Fragment(), OnItemClickHandler {
 
             val recyclerAdapter = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
             rvGifs.layoutManager = recyclerAdapter
-            rvGifs.adapter = GifAdapter(this@SearchGifFragment)
+            rvGifs.adapter = GifAdapter()
 
             searchVBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {

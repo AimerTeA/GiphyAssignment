@@ -17,7 +17,6 @@ class GifViewHolder(
             data = item
             ivFavorite.setOnClickListener {
                 item.onItemClick()
-                notifyChange()
             }
         }
     }
